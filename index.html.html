@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDS Compliance Suite 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #1c2b3a;
+  --ink-soft:   #2e4057;
+  --paper:      #f0ece4;
+  --cream:      #faf8f4;
+  --white:      #ffffff;
+  --sage:       #28614f;
+  --sage-mid:   #34795f;
+  --sage-pale:  #e8f3ee;
+  --amber:      #b86e0a;
+  --amber-pale: #fef3e2;
+  --amber-bright:#f5a623;
+  --red:        #c0392b;
+  --red-pale:   #fdecea;
+  --blue:       #1a56db;
+  --blue-pale:  #eff6ff;
+  --slate:      #526070;
+  --slate-light:#8a9bb0;
+  --line:       #ddd8cf;
+  --line-light: #ede9e1;
+  --shadow-sm:  0 1px 4px rgba(28,43,58,.07);
+  --shadow-md:  0 4px 16px rgba(28,43,58,.10);
+  --shadow-lg:  0 8px 32px rgba(28,43,58,.13);
+  --r:          10px;
+  --r-sm:       7px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ─── COMPACT HEADER ─── */
+.header{
+  background:var(--ink);
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;
+  color:#fff;letter-spacing:-0.3px;
+}
+.header-logo span{color:var(--amber-bright)}
+.header-meta{
+  font-size:11px;font-weight:500;color:rgba(255,255,255,.45);
+  letter-spacing:.4px;
+}
+.header-sep{width:1px;height:28px;background:rgba(255,255,255,.12)}
+
+.client-badge{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:20px;
+  padding:5px 12px 5px 7px;
+  cursor:pointer;transition:background .2s;
+}
+.client-badge:hover{background:rgba(255,255,255,.13)}
+.client-avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--sage-mid);
+  color:#fff;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.client-name-display{font-size:12px;font-weight:600;color:rgba(255,255,255,.85)}
+.client-name-display.empty{color:rgba(255,255,255,.4);font-style:italic}
+
+/* ─── TAB BAR ─── */
+.tab-bar{
+  background:var(--ink-soft);
+  padding:0 32px;
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-bar-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;gap:0;width:100%;
+}
+.tab-btn{
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.42);
+  font-family:'Inter',sans-serif;
+  font-size:12.5px;font-weight:600;letter-spacing:.2px;
+  padding:12px 18px;
+  border-bottom:2.5px solid transparent;
+  transition:color .2s,border-color .2s;
+  white-space:nowrap;
+}
+.tab-btn:hover{color:rgba(255,255,255,.75)}
+.tab-btn.active{color:var(--amber-bright);border-bottom-color:var(--amber-bright)}
+
+/* ─── TOAST NOTIFICATION ─── */
+#toast-container{
+  position:fixed;top:74px;right:20px;z-index:999;
+  display:flex;flex-direction:column;gap:10px;
+  max-width:340px;
+}
+.toast{
+  padding:14px 18px;border-radius:var(--r);
+  box-shadow:var(--shadow-lg);
+  display:flex;align-items:flex-start;gap:12px;
+  animation:toastIn .35s ease;
+  font-size:13px;font-weight:500;line-height:1.5;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.toast.warn{background:#fff8ec;border-left:4px solid var(--amber);color:#7a4a00}
+.toast.danger{background:#fef0ef;border-left:4px solid var(--red);color:#8b1c1c}
+.toast.success{background:#edfaf4;border-left:4px solid var(--sage);color:#174d38}
+.toast-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.toast-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  font-size:16px;color:inherit;opacity:.5;flex-shrink:0;
+  padding:0 0 0 8px;line-height:1;
+}
+
+/* ─── MAIN ─── */
+.main{max-width:980px;margin:0 auto;padding:28px 32px 72px}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ─── SECTION HEADING ─── */
+.sec-head{margin-bottom:22px}
+.sec-head h2{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;color:var(--ink);
+  margin-bottom:4px;
+}
+.sec-head p{font-size:14px;color:var(--slate);line-height:1.6}
+
+/* ─── CARD ─── */
+.card{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:24px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow-sm);
+}
+.card-head{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;color:var(--sage);
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:9px;
+  border-bottom:1px solid var(--line-light);
+  padding-bottom:12px;
+}
+.card-head .ico{
+  width:26px;height:26px;border-radius:7px;
+  background:var(--sage);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+
+/* ─── SOP TABLE ─── */
+.sop-table{width:100%;border-collapse:collapse}
+.sop-table th{
+  text-align:left;padding:9px 12px;
+  font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--slate-light);
+  border-bottom:2px solid var(--ink);
+}
+.sop-table td{
+  padding:14px 12px;
+  border-bottom:1px solid var(--line-light);
+  font-size:14px;vertical-align:top;
+}
+.sop-table tr:last-child td{border-bottom:none}
+.phase-pill{
+  display:inline-block;
+  background:var(--ink);color:#f0ece4;
+  font-size:9.5px;font-weight:700;letter-spacing:1px;
+  padding:3px 9px;border-radius:4px;white-space:nowrap;
+}
+.sop-action{font-weight:700;color:var(--ink);font-size:14px;margin-bottom:3px}
+.sop-desc{font-size:13px;color:var(--slate);line-height:1.55}
+
+/* ─── CHECKLIST ─── */
+.cl-item{
+  display:grid;grid-template-columns:34px 1fr auto;
+  gap:12px;align-items:start;
+  padding:15px 0;border-bottom:1px solid var(--line-light);
+}
+.cl-item:last-child{border-bottom:none}
+.cl-num{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--sage);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.cl-q{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px}
+.cl-a{font-size:13px;color:var(--slate);line-height:1.55}
+.cl-tag{
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  padding:3px 9px;border-radius:4px;white-space:nowrap;align-self:flex-start;margin-top:2px;
+}
+.t-red{background:var(--red-pale);color:var(--red)}
+.t-blue{background:var(--blue-pale);color:var(--blue)}
+.t-amber{background:var(--amber-pale);color:var(--amber)}
+.t-sage{background:var(--sage-pale);color:var(--sage)}
+
+/* ─── RATES TABLE ─── */
+.r-table{width:100%;border-collapse:collapse}
+.r-table thead{background:var(--ink)}
+.r-table th{
+  text-align:left;padding:11px 14px;
+  font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(240,236,228,.7);
+}
+.r-table th:not(:first-child){text-align:center}
+.r-table td{
+  padding:13px 14px;border-bottom:1px solid var(--line-light);
+  font-size:13.5px;vertical-align:middle;
+}
+.r-table td:not(:first-child){text-align:center}
+.r-table tbody tr:hover{background:rgba(40,97,79,.04)}
+.r-table tbody tr:last-child td{border-bottom:none}
+.cat-name{font-weight:600;color:var(--ink);font-size:14px}
+.cat-sub{font-size:12px;color:var(--slate-light);margin-top:2px}
+.sec-code{
+  font-size:11.5px;color:var(--amber);font-weight:700;
+  background:var(--amber-pale);padding:2px 7px;border-radius:4px;
+}
+.rate-val{font-weight:700;font-size:15px;color:var(--sage)}
+
+/* ─── FORM ELEMENTS ─── */
+.fg{margin-bottom:16px}
+.fg label{
+  display:block;font-size:11px;font-weight:700;
+  letter-spacing:.8px;text-transform:uppercase;
+  color:var(--slate);margin-bottom:6px;
+}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--line);border-radius:var(--r-sm);
+  font-family:'Inter',sans-serif;font-size:14px;
+  background:var(--cream);color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  outline:none;border-color:var(--sage);
+  box-shadow:0 0 0 3px rgba(40,97,79,.12);
+}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px;
+  border-radius:var(--r-sm);padding:12px 22px;
+  transition:filter .2s,transform .1s;
+}
+.btn:active{transform:scale(.98)}
+.btn-sage{background:var(--sage);color:#fff;width:100%}
+.btn-sage:hover{filter:brightness(1.1)}
+.btn-outline{background:none;border:1.5px solid var(--line);color:var(--red);width:100%;font-size:12px}
+.btn-outline:hover{border-color:var(--red);background:var(--red-pale)}
+
+/* ─── RESULT BOX ─── */
+.result-box{
+  margin-top:16px;padding:18px 20px;border-radius:var(--r);
+  display:none;animation:fadeUp .3s ease;
+}
+.result-box.yes{background:var(--red-pale);border:1.5px solid #e8a09a}
+.result-box.no{background:var(--sage-pale);border:1.5px solid #9ec9b8}
+.result-box.warn{background:var(--amber-pale);border:1.5px solid #e8c89a}
+.res-verdict{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:700;margin-bottom:6px;
+}
+.res-amount{
+  font-family:'Playfair Display',serif;
+  font-size:26px;font-weight:700;margin:8px 0;
+}
+.res-detail{font-size:13.5px;line-height:1.7}
+
+/* ─── TRACKER ─── */
+.tr-table{width:100%;border-collapse:collapse}
+.tr-table thead{border-bottom:2px solid var(--ink)}
+.tr-table th{
+  text-align:left;padding:9px 12px;
+  font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--slate-light);
+}
+.tr-table td{padding:13px 12px;border-bottom:1px solid var(--line-light);font-size:13.5px}
+.tr-table tbody tr:last-child td{border-bottom:none}
+.tr-table tbody tr:hover{background:rgba(40,97,79,.03)}
+.prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:5px}
+.prog-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.pf-safe{background:var(--sage-mid)}
+.pf-warn{background:var(--amber)}
+.pf-danger{background:var(--red)}
+.chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px}
+.ch-safe{background:var(--sage-pale);color:var(--sage)}
+.ch-warn{background:var(--amber-pale);color:var(--amber)}
+.ch-danger{background:var(--red-pale);color:var(--red)}
+
+.empty-state{text-align:center;padding:48px 20px;color:var(--slate-light)}
+.empty-state .emo{font-size:36px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* ─── EXAMPLES ─── */
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ex-card{
+  background:var(--white);border:1px solid var(--line);
+  border-radius:var(--r);padding:18px;
+  transition:box-shadow .2s;
+}
+.ex-card:hover{box-shadow:var(--shadow-md)}
+.ex-tag{
+  display:inline-block;font-size:9.5px;font-weight:700;
+  letter-spacing:.8px;text-transform:uppercase;
+  padding:3px 9px;border-radius:4px;margin-bottom:9px;
+}
+.ex-label{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:6px}
+.ex-detail{font-size:13px;color:var(--slate);line-height:1.55;margin-bottom:10px}
+.ex-action{font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:5px;display:inline-block}
+
+/* ─── CLIENT MODAL ─── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(28,43,58,.55);backdrop-filter:blur(4px);
+  z-index:200;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--white);border-radius:var(--r);
+  padding:32px;width:100%;max-width:480px;
+  box-shadow:var(--shadow-lg);
+  animation:slideUp .25s ease;
+  margin:20px;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.modal-head{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;color:var(--ink);
+  margin-bottom:6px;
+}
+.modal-sub{font-size:13px;color:var(--slate);margin-bottom:20px;line-height:1.6}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions .btn{flex:1}
+.btn-secondary{background:var(--cream);border:1.5px solid var(--line);color:var(--slate);font-size:13.5px}
+.btn-secondary:hover{border-color:var(--sage-mid);color:var(--sage)}
+
+/* ─── INFO CHIPS ─── */
+.info-strip{
+  display:flex;gap:10px;flex-wrap:wrap;
+  background:var(--sage-pale);border:1px solid rgba(40,97,79,.2);
+  border-radius:var(--r-sm);padding:12px 16px;margin-bottom:18px;
+}
+.info-chip{font-size:12px;color:var(--sage);font-weight:600}
+.info-chip span{color:var(--slate);font-weight:400}
+
+/* ─── ALERT CARDS ─── */
+.alert-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:0}
+.alert-card{border-radius:var(--r-sm);padding:16px 18px}
+.alert-card.red{background:var(--red-pale);border-left:4px solid var(--red)}
+.alert-card.amber{background:var(--amber-pale);border-left:4px solid var(--amber)}
+.alert-title{font-weight:700;font-size:14px;margin-bottom:5px}
+.alert-card.red .alert-title{color:var(--red)}
+.alert-card.amber .alert-title{color:var(--amber)}
+.alert-card p{font-size:13px;color:var(--slate);line-height:1.55}
+
+/* ─── NOTIFY PROFILE PANEL ─── */
+.profile-panel{
+  background:linear-gradient(135deg,var(--ink) 0%,var(--ink-soft) 100%);
+  border-radius:var(--r);padding:24px;color:#fff;margin-bottom:18px;
+}
+.profile-saved{display:none}
+.profile-form{display:block}
+.profile-panel .card-head{color:var(--amber-bright);border-color:rgba(255,255,255,.1)}
+.profile-panel .fg label{color:rgba(255,255,255,.55)}
+.profile-panel .fg input,.profile-panel .fg select{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.15);color:#fff;
+}
+.profile-panel .fg input::placeholder{color:rgba(255,255,255,.3)}
+.profile-panel .fg input:focus{
+  border-color:var(--amber-bright);
+  box-shadow:0 0 0 3px rgba(245,166,35,.2);
+}
+.profile-view{
+  display:grid;grid-template-columns:auto 1fr auto;
+  gap:16px;align-items:center;
+}
+.profile-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--sage-mid);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:#fff;
+  flex-shrink:0;
+}
+.profile-info h3{font-size:16px;font-weight:700;margin-bottom:2px}
+.profile-info p{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6}
+.profile-edit-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.7);border-radius:6px;padding:6px 14px;
+  font-size:12px;font-weight:600;cursor:pointer;
+  transition:background .2s;font-family:'Inter',sans-serif;
+}
+.profile-edit-btn:hover{background:rgba(255,255,255,.18)}
+
+/* ─── NOTIFICATION HISTORY ─── */
+.notif-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.notif-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:12px 14px;border-radius:var(--r-sm);font-size:13px;
+}
+.notif-item.danger{background:var(--red-pale);border:1px solid #f0b8b5}
+.notif-item.warn{background:var(--amber-pale);border:1px solid #f0d8b5}
+.notif-item.success{background:var(--sage-pale);border:1px solid #b5dfc9}
+.notif-stamp{font-size:11px;color:var(--slate-light);margin-top:2px}
+.notif-emo{font-size:17px;flex-shrink:0;margin-top:1px}
+
+.divider{border:none;border-top:1px solid var(--line-light);margin:18px 0}
+
+/* ─── FOOTER ─── */
+.footer{
+  margin-top:36px;padding:16px 20px;
+  background:var(--ink);color:rgba(240,236,228,.45);
+  border-radius:var(--r);font-size:12px;text-align:center;line-height:1.7;
+}
+.footer strong{color:var(--amber-bright)}
+
+/* ─── STATUTORY BANNER ─── */
+.statutory-banner{
+  background:linear-gradient(135deg,#1a2a6c 0%,#2e4057 100%);
+  border-left:5px solid var(--amber-bright);
+  border-radius:var(--r-sm);
+  padding:13px 20px;
+  margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow-md);
+}
+.statutory-banner .sb-icon{
+  font-size:22px;flex-shrink:0;
+}
+.statutory-banner .sb-text{
+  font-size:13px;font-weight:600;
+  color:rgba(240,236,228,.92);
+  line-height:1.55;
+}
+.statutory-banner .sb-text strong{
+  color:var(--amber-bright);font-size:13.5px;
+}
+
+/* ─── CHALLAN MODULE ─── */
+.challan-module{
+  margin-top:20px;
+  border-top:2px dashed var(--line);
+  padding-top:20px;
+}
+.challan-prompt-label{
+  font-size:13.5px;font-weight:700;color:var(--ink);
+  margin-bottom:12px;line-height:1.5;
+  display:flex;align-items:flex-start;gap:9px;
+}
+.challan-prompt-label .cq-icon{
+  width:24px;height:24px;border-radius:6px;
+  background:var(--blue);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;flex-shrink:0;margin-top:1px;
+}
+.challan-btns{display:flex;gap:10px;margin-bottom:0}
+.challan-btn{
+  flex:1;padding:11px 0;font-size:13px;font-weight:700;
+  border-radius:var(--r-sm);cursor:pointer;
+  font-family:'Inter',sans-serif;
+  border:2px solid var(--line);
+  background:var(--cream);color:var(--ink);
+  transition:background .18s,color .18s,border-color .18s;
+}
+.challan-btn.active-yes{
+  background:var(--blue);color:#fff;border-color:var(--blue);
+}
+.challan-btn.active-no{
+  background:var(--ink);color:#fff;border-color:var(--ink);
+}
+.challan-result{
+  display:none;
+  margin-top:14px;
+  background:#f0f6ff;
+  border:1.5px solid #bfdbfe;
+  border-radius:var(--r);
+  padding:18px 20px;
+  animation:fadeUp .3s ease;
+}
+.challan-result .cr-head{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;
+  color:var(--blue);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.challan-result .cr-head .cr-pill{
+  font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  background:var(--blue);color:#fff;
+  padding:3px 9px;border-radius:4px;
+}
+.challan-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 0;border-bottom:1px solid #dbeafe;
+  font-size:13.5px;
+}
+.challan-row:last-child{border-bottom:none}
+.challan-row .cr-label{
+  font-weight:700;color:var(--ink);
+  min-width:230px;flex-shrink:0;
+  display:flex;align-items:center;gap:7px;
+}
+.challan-row .cr-value{
+  color:var(--blue);font-weight:700;font-size:14px;
+}
+.challan-row .cr-code{
+  display:inline-block;
+  background:var(--blue);color:#fff;
+  font-size:13px;font-weight:800;
+  padding:3px 12px;border-radius:6px;
+  letter-spacing:.3px;
+}
+.challan-note{
+  margin-top:12px;
+  font-size:12px;color:var(--slate);
+  line-height:1.65;
+  background:#e8f0fe;border-radius:6px;
+  padding:10px 13px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:700px){
+  .header{padding:12px 16px}
+  .header-logo{font-size:17px}
+  .tab-bar{padding:0 16px}
+  .main{padding:20px 16px 60px}
+  .fg-row,.fg-row3,.alert-2col,.ex-grid{grid-template-columns:1fr}
+  .challan-row{flex-direction:column;gap:4px}
+  .challan-row .cr-label{min-width:unset}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── COMPACT HEADER ─── -->
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="header-logo">TDS <span>Suite</span> 2026</div>
+      <div class="header-meta">Income Tax Act, 2025 &nbsp;·&nbsp; FY 2026–27</div>
+    </div>
+    <div class="header-sep"></div>
+  </div>
+  <div class="client-badge" onclick="openProfileModal()">
+    <div class="client-avatar" id="hdr-avatar">?</div>
+    <div class="client-name-display empty" id="hdr-name">Set up your profile</div>
+  </div>
+</header>
+
+<!-- ─── TABS ─── -->
+<nav class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" onclick="switchTab('sop',this)">Process SOP</button>
+    <button class="tab-btn" onclick="switchTab('checklist',this)">Checklist</button>
+    <button class="tab-btn" onclick="switchTab('rates',this)">Rate Chart</button>
+    <button class="tab-btn" onclick="switchTab('calculator',this)">Calculator</button>
+    <button class="tab-btn" onclick="switchTab('tracker',this)">Vendor Tracker</button>
+    <button class="tab-btn" onclick="switchTab('examples',this)">Examples</button>
+    <button class="tab-btn" onclick="switchTab('notifications',this)" id="notif-tab">Notifications <span id="notif-count" style="display:none;background:var(--red);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px">0</span></button>
+  </div>
+</nav>
+
+<!-- ─── TOAST ─── -->
+<div id="toast-container"></div>
+
+<!-- ─── MAIN ─── -->
+<main class="main">
+
+  <!-- ══ STATUTORY SCOPE BANNER ══ -->
+  <div class="statutory-banner">
+    <span class="sb-icon">⚖️</span>
+    <div class="sb-text">
+      <strong>STATUTORY SCOPE NOTICE</strong> &nbsp;—&nbsp;
+      This utility is applicable exclusively to <strong>Resident Assessees</strong> under the
+      <strong>Income Tax Act, 2025</strong>. Non-resident payees attract separate withholding tax provisions
+      under Part C (Sections 388–392) and are outside the scope of this tool.
+    </div>
+  </div>
+
+  <!-- ══ SOP ══ -->
+  <div class="tab-panel active" id="tab-sop">
+    <div class="sec-head">
+      <h2>Standard Operating Procedure</h2>
+      <p>Six sequential phases to follow for every vendor invoice before releasing payment.</p>
+    </div>
+    <div class="card">
+      <table class="sop-table">
+        <thead><tr><th style="width:120px">Phase</th><th style="width:170px">Action</th><th>What to Do</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="phase-pill">I · IDENTIFY</span></td>
+            <td><div class="sop-action">Categorize & Date Check</div></td>
+            <td><div class="sop-desc">Check the invoice date first — must fall within Tax Year 2026-27 (Apr 2026 – Mar 2027). Then determine whether the expense is for Goods, Professional Services, Technical Services, Rent, Contract, or Commission.</div></td>
+          </tr>
+          <tr>
+            <td><span class="phase-pill">II · TIMING</span></td>
+            <td><div class="sop-action">Earlier-Of Rule</div></td>
+            <td><div class="sop-desc"><strong>Critical:</strong> Deduct TDS at whichever happens first — (a) crediting the vendor in your books, or (b) making the payment. Waiting until payment is a common, costly error that attracts interest under Section 201.</div></td>
+          </tr>
+          <tr>
+            <td><span class="phase-pill">III · ADVANCE</span></td>
+            <td><div class="sop-action">Proforma / Advance Payments</div></td>
+            <td><div class="sop-desc">If paying an advance against a Proforma Invoice, TDS must be deducted at the time of payment — even though no final tax invoice has been received. Track this advance amount toward the vendor's annual threshold.</div></td>
+          </tr>
+          <tr>
+            <td><span class="phase-pill">IV · VERIFY</span></td>
+            <td><div class="sop-action">PAN & 206AB Check</div></td>
+            <td><div class="sop-desc">Locate PAN on the invoice. <strong>No PAN = flat 20% deduction, no exceptions.</strong> Then verify on the IT Compliance Portal whether the vendor is a "Specified Person" (non-filer for 2 prior years). If yes, the rate doubles.</div></td>
+          </tr>
+          <tr>
+            <td><span class="phase-pill">V · CALCULATE</span></td>
+            <td><div class="sop-action">Exclude GST, Apply Rate</div></td>
+            <td><div class="sop-desc">TDS applies only on the <strong>Base Amount (net of GST)</strong>. Formula: <code style="background:#f0ece4;padding:2px 7px;border-radius:4px;font-size:13px">(Invoice Total − GST) × TDS Rate%</code>. Refer to the Rate Chart tab.</div></td>
+          </tr>
+          <tr>
+            <td><span class="phase-pill">VI · COMPLY</span></td>
+            <td><div class="sop-action">Pay Net & Issue Form 131</div></td>
+            <td><div class="sop-desc">Pay the vendor the net amount (Invoice Total − TDS). Deposit TDS with the government by the 7th of the following month. Issue <strong>Form 131</strong> (replaces old Form 16A) to the vendor after quarterly filing.</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-strip">
+      <div class="info-chip">🗓 Tax Year: <span>2026–27</span></div>
+      <div class="info-chip">📋 TDS Certificate: <span>Form 131</span></div>
+      <div class="info-chip">📑 Lower Ded. Request: <span>Form 121</span></div>
+      <div class="info-chip">⚖️ Governing Sec: <span>Section 393, ITA 2025</span></div>
+      <div class="info-chip">🏦 Deposit Due: <span>7th of following month</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHECKLIST ══ -->
+  <div class="tab-panel" id="tab-checklist">
+    <div class="sec-head">
+      <h2>Invoice Verification Checklist</h2>
+      <p>Work through every step in sequence before approving any vendor payment. No shortcuts.</p>
+    </div>
+    <div class="card">
+      <ul>
+        <li class="cl-item">
+          <div class="cl-num">1</div>
+          <div>
+            <div class="cl-q">Is the invoice date within Tax Year 2026-27?</div>
+            <div class="cl-a">Date must be between 1 Apr 2026 and 31 Mar 2027. If from a prior year, check whether TDS was already booked. If not, deduct before making payment now.</div>
+          </div>
+          <span class="cl-tag t-red">CRITICAL</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">2</div>
+          <div>
+            <div class="cl-q">Is this a Proforma / Advance payment invoice?</div>
+            <div class="cl-a">If paying an advance against a Proforma Invoice, deduct TDS immediately on the advance amount. Do not wait for the final tax invoice to arrive.</div>
+          </div>
+          <span class="cl-tag t-red">ADVANCE</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">3</div>
+          <div>
+            <div class="cl-q">What is the nature of expense — Service, Contract, Rent, or Goods?</div>
+            <div class="cl-a">Identify the correct category. Mixed invoices (e.g., equipment + installation) must be split: goods and service portions taxed under their respective rules.</div>
+          </div>
+          <span class="cl-tag t-blue">CLASSIFY</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">4</div>
+          <div>
+            <div class="cl-q">Is the vendor's PAN clearly stated on the invoice?</div>
+            <div class="cl-a">If PAN is absent → deduct a flat <strong>20%</strong> on the base amount regardless of the nature, category, or relationship with the vendor.</div>
+          </div>
+          <span class="cl-tag t-red">NO PAN = 20%</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">5</div>
+          <div>
+            <div class="cl-q">Has the annual threshold been crossed for this vendor?</div>
+            <div class="cl-a">Check cumulative payments to this vendor in FY 2026-27 against the applicable annual limit. Use the Vendor Tracker tab to monitor this automatically.</div>
+          </div>
+          <span class="cl-tag t-amber">VERIFY</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">6</div>
+          <div>
+            <div class="cl-q">Is the vendor a "Specified Person" under Section 206AB?</div>
+            <div class="cl-a">Verify on the IT Portal → Compliance Check. If the vendor has not filed ITR for 2 preceding years and TDS was &gt;₹50,000, the applicable rate <strong>doubles</strong>.</div>
+          </div>
+          <span class="cl-tag t-amber">PORTAL CHECK</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">7</div>
+          <div>
+            <div class="cl-q">Is GST charged separately and clearly shown on the invoice?</div>
+            <div class="cl-a">TDS is calculated only on the pre-GST base value. Example: ₹1,18,000 invoice (₹1,00,000 base + ₹18,000 GST) → TDS is computed on ₹1,00,000 only.</div>
+          </div>
+          <span class="cl-tag t-sage">CALCULATE</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">8</div>
+          <div>
+            <div class="cl-q">Has the vendor provided a Nil / Lower Deduction Certificate?</div>
+            <div class="cl-a">If the vendor holds a valid Form 121 (u/s 197 equivalent), apply the rate mentioned in the certificate. Retain a certified copy for your records and TDS filing.</div>
+          </div>
+          <span class="cl-tag t-amber">VERIFY</span>
+        </li>
+        <li class="cl-item">
+          <div class="cl-num">9</div>
+          <div>
+            <div class="cl-q">Is the net payment correctly calculated and reduced by TDS?</div>
+            <div class="cl-a">Net Vendor Payment = Base Amount + GST − TDS Amount. Never pay 100% of the invoice and attempt to recover TDS afterward — this is extremely difficult and creates compliance risk.</div>
+          </div>
+          <span class="cl-tag t-sage">FINAL CHECK</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ RATE CHART ══ -->
+  <div class="tab-panel" id="tab-rates">
+    <div class="sec-head">
+      <h2>TDS Rate Chart — FY 2026-27</h2>
+      <p>All rates per Income Tax Act, 2025 (Section 393). Old section references shown for cross-referencing.</p>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="r-table">
+        <thead>
+          <tr>
+            <th>Category of Payment</th>
+            <th>Section</th>
+            <th>Annual Threshold</th>
+            <th>TDS Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="cat-name">Contractor — Individual / HUF</div><div class="cat-sub">Advertising, maintenance, repairs, catering, manpower supply</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194C</div></td>
+            <td>₹30,000 (single)<br>₹1,00,000 (aggregate)</td>
+            <td><span class="rate-val">1%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Contractor — Company / Firm</div><div class="cat-sub">Advertising, maintenance, repairs, catering, manpower supply</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194C</div></td>
+            <td>₹30,000 (single)<br>₹1,00,000 (aggregate)</td>
+            <td><span class="rate-val">2%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Professional Fees</div><div class="cat-sub">Legal, CA, medical, engineering, architect, interior design</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194J</div></td>
+            <td>₹50,000</td>
+            <td><span class="rate-val">10%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Technical Services</div><div class="cat-sub">IT services, BPO, call centre, software consultancy</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194J</div></td>
+            <td>₹50,000</td>
+            <td><span class="rate-val">2%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Rent — Land / Building / Furniture</div><div class="cat-sub">Office space, godown, residential premises, furniture on hire</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194I</div></td>
+            <td>₹6,00,000 p.a.</td>
+            <td><span class="rate-val">10%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Rent — Plant / Machinery / Equipment</div><div class="cat-sub">Heavy machinery, generators, vehicles on hire</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194I</div></td>
+            <td>₹6,00,000 p.a.</td>
+            <td><span class="rate-val">2%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Commission / Brokerage</div><div class="cat-sub">Sales agents, insurance agents, property brokers</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194H</div></td>
+            <td>₹20,000</td>
+            <td><span class="rate-val">2%</span></td>
+          </tr>
+          <tr>
+            <td><div class="cat-name">Purchase of Goods</div><div class="cat-sub">Raw materials, inventory — applicable if buyer turnover &gt;₹10 Cr</div></td>
+            <td><span class="sec-code">393</span><div style="font-size:11px;color:var(--slate-light);margin-top:3px">Old: 194Q</div></td>
+            <td>₹50,00,000</td>
+            <td><span class="rate-val">0.1%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert-2col">
+      <div class="alert-card red">
+        <div class="alert-title">⚠️ No PAN — Section 206AA</div>
+        <p>If the vendor does not provide a PAN, deduct <strong>20% flat</strong> on the base amount regardless of category, relationship, or rate shown above.</p>
+      </div>
+      <div class="alert-card amber">
+        <div class="alert-title">📋 Specified Person — Section 206AB</div>
+        <p>If the vendor is a non-filer of ITR for 2 preceding years and TDS &gt;₹50,000 was applicable, the standard rate <strong>doubles</strong>. Always verify on the IT Portal.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CALCULATOR ══ -->
+  <div class="tab-panel" id="tab-calculator">
+    <div class="sec-head">
+      <h2>TDS Applicability Calculator</h2>
+      <p>Enter invoice details to instantly know whether TDS applies and the precise amount to deduct.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="calc-grid">
+      <div class="card">
+        <div class="card-head"><span class="ico">₹</span> Invoice Details</div>
+
+        <div class="fg">
+          <label>Nature of Payment</label>
+          <select id="c_cat">
+            <option value="">— Select Category —</option>
+            <option value="contract_ind">Contractor — Individual / HUF (1%)</option>
+            <option value="contract_co">Contractor — Company / Firm (2%)</option>
+            <option value="prof">Professional Fees — Legal, CA, Medical (10%)</option>
+            <option value="tech">Technical Services — IT, BPO, Software (2%)</option>
+            <option value="rent_land">Rent — Land / Building / Furniture (10%)</option>
+            <option value="rent_machine">Rent — Plant / Machinery (2%)</option>
+            <option value="comm">Commission / Brokerage (2%)</option>
+            <option value="goods">Purchase of Goods (0.1%)</option>
+          </select>
+        </div>
+
+        <div class="fg-row">
+          <div class="fg">
+            <label>Base Amount (Excl. GST) ₹</label>
+            <input type="number" id="c_amount" placeholder="e.g. 45,000" oninput="onBaseAmountChange()">
+          </div>
+          <div class="fg">
+            <label>GST Amount ₹</label>
+            <input type="number" id="c_gst" placeholder="e.g. 8,100">
+          </div>
+        </div>
+
+        <!-- ── Annual Total Smart Prompt ── -->
+        <div id="c_annual_prompt" style="display:none;margin-bottom:16px;padding:14px 16px;background:var(--blue-pale);border:1.5px solid #bfdbfe;border-radius:var(--r-sm)">
+          <div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:10px">
+            💬 Is <strong id="c_prompt_amount">₹0</strong> also the estimated <u>annual total</u> you will pay this vendor?
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn" onclick="setAnnualFromBase()" style="flex:1;background:var(--blue);color:#fff;padding:10px 0;font-size:13px">
+              ✅ Yes — use this as annual total
+            </button>
+            <button class="btn" onclick="askManualAnnual()" style="flex:1;background:#fff;border:1.5px solid #bfdbfe;color:var(--blue);padding:10px 0;font-size:13px">
+              ✏️ No — I'll enter it manually
+            </button>
+          </div>
+        </div>
+
+        <!-- Annual total confirmed display -->
+        <div id="c_annual_confirmed" style="display:none;margin-bottom:16px;padding:10px 14px;background:var(--sage-pale);border:1.5px solid #9ec9b8;border-radius:var(--r-sm);display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:13px;font-weight:600;color:var(--sage)">📅 Estimated Annual Total: <strong id="c_annual_display">—</strong></span>
+            <button onclick="resetAnnual()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--slate);text-decoration:underline;font-family:'Inter',sans-serif">Change</button>
+          </div>
+        </div>
+
+        <!-- Manual annual entry -->
+        <div class="fg" id="c_annual_manual_wrap" style="display:none">
+          <label>Estimated Annual Total to this Vendor ₹</label>
+          <input type="number" id="c_annual" placeholder="e.g. 1,20,000">
+          <div style="font-size:11.5px;color:var(--slate);margin-top:5px">Enter the total you expect to pay this vendor across the full financial year.</div>
+        </div>
+
+        <!-- Hidden field to hold the resolved annual value -->
+        <input type="hidden" id="c_annual_resolved" value="">
+
+        <div class="fg" style="margin-top:4px">
+          <label>Vendor has PAN on invoice?</label>
+          <select id="c_pan">
+            <option value="yes">Yes — PAN is available on invoice</option>
+            <option value="no">No — PAN not mentioned / not available</option>
+          </select>
+        </div>
+
+        <button class="btn btn-sage" onclick="calcTDS()">Calculate TDS →</button>
+        <div id="calc_result" class="result-box"></div>
+
+        <!-- ── DEPOSIT STATUS & INTEREST CALCULATOR ── -->
+        <div id="deposit_section" style="display:none;margin-top:20px">
+          <div style="border-top:2px dashed var(--line);padding-top:20px">
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+              <span style="width:24px;height:24px;background:var(--amber);color:#fff;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">!</span>
+              Is there a delay in depositing this TDS?
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:14px">
+              <button class="btn" id="dep_yes_btn" onclick="toggleDepositDelay(true)"
+                style="flex:1;padding:10px 0;font-size:13px;background:var(--cream);border:2px solid var(--line);color:var(--ink)">
+                ⚠️ Yes — there is a delay
+              </button>
+              <button class="btn" id="dep_no_btn" onclick="toggleDepositDelay(false)"
+                style="flex:1;padding:10px 0;font-size:13px;background:var(--cream);border:2px solid var(--line);color:var(--ink)">
+                ✅ No — deposited on time
+              </button>
+            </div>
+
+            <!-- Date inputs — shown only when Yes is selected -->
+            <div id="deposit_dates" style="display:none">
+              <div class="fg-row" style="margin-bottom:10px">
+                <div class="fg" style="margin-bottom:0">
+                  <label>Invoice Date</label>
+                  <input type="date" id="d_invoice_date">
+                </div>
+                <div class="fg" style="margin-bottom:0">
+                  <label>Actual Date of TDS Deposit</label>
+                  <input type="date" id="d_deposit_date">
+                </div>
+              </div>
+              <button class="btn" onclick="calcInterest()"
+                style="width:100%;background:var(--red);color:#fff;padding:12px;font-size:13.5px;font-weight:700;border-radius:var(--r-sm);margin-top:4px">
+                Calculate Interest Liability →
+              </button>
+            </div>
+
+            <!-- On-time confirmation -->
+            <div id="deposit_ontime" style="display:none;padding:12px 14px;background:var(--sage-pale);border:1.5px solid #9ec9b8;border-radius:var(--r-sm);font-size:13px;font-weight:600;color:var(--sage)">
+              ✅ No interest liability. TDS deposited within due date.
+            </div>
+
+            <!-- Interest result -->
+            <div id="interest_result" style="display:none;margin-top:14px"></div>
+          </div>
+        </div>
+
+        <!-- ══ CHALLAN MAPPING MODULE ══ -->
+        <div class="challan-module" id="challan_module" style="display:none">
+          <div class="challan-prompt-label">
+            <span class="cq-icon">?</span>
+            Do you want to know the exact section and section code as per the
+            Income Tax Act, 2025 for filling out the deposit challan?
+          </div>
+          <div class="challan-btns">
+            <button class="challan-btn" id="challan_yes_btn" onclick="showChallanInfo(true)">
+              📋 Yes — Show me the challan details
+            </button>
+            <button class="challan-btn" id="challan_no_btn" onclick="showChallanInfo(false)">
+              ✕ No — Not required
+            </button>
+          </div>
+          <div class="challan-result" id="challan_result"></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:var(--ink);color:#fff">
+        <div class="card-head" style="color:var(--amber-bright);border-color:rgba(255,255,255,.1)">💡 How to Use This</div>
+        <div style="font-size:13.5px;line-height:1.85;color:rgba(240,236,228,.65)">
+          <p style="margin-bottom:12px"><strong style="color:#fff">Base Amount</strong><br>The invoice value before adding GST. TDS is never calculated on the GST portion.</p>
+          <p style="margin-bottom:12px"><strong style="color:#fff">Annual Total Prompt</strong><br>After entering the base amount, the tool will ask if that same figure is also the annual total. If you pay this vendor multiple times a year, click <em>No</em> and enter the full yearly estimate.</p>
+          <p style="margin-bottom:12px"><strong style="color:#fff">Why Annual Total Matters</strong><br>TDS kicks in only when the annual threshold is crossed. A single ₹25,000 invoice may not trigger TDS — but ₹1,20,000 paid over the year to the same vendor will.</p>
+          <p style="margin-bottom:12px"><strong style="color:#fff">No PAN = 20% Flat</strong><br>Ignore all rates — deduct 20% flat on the base amount if PAN is absent.</p>
+          <p style="margin-bottom:12px"><strong style="color:#fff">Net Payment Formula</strong><br>Pay Vendor = Base Amount + GST − TDS Deducted</p>
+          <p style="margin-bottom:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)"><strong style="color:var(--amber-bright)">⏱ Interest on Late Deposit</strong><br>After TDS is calculated, the tool asks whether deposit was delayed. If yes, enter the invoice date and actual deposit date — interest at 1.5% per month (or part thereof) is computed per the Income Tax Act, 2025.</p>
+        </div>
+
+        <!-- Interest Reference Table -->
+        <div style="margin-top:18px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(240,236,228,.4);margin-bottom:10px">Due Date Quick Reference</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;color:rgba(240,236,228,.7)">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+                <th style="text-align:left;padding:6px 8px;font-weight:600;color:rgba(240,236,228,.45);font-size:10px;text-transform:uppercase;letter-spacing:.8px">Invoice Month</th>
+                <th style="text-align:left;padding:6px 8px;font-weight:600;color:rgba(240,236,228,.45);font-size:10px;text-transform:uppercase;letter-spacing:.8px">TDS Due By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px 8px">April – February</td><td style="padding:6px 8px;font-weight:600;color:var(--amber-bright)">7th of following month</td></tr>
+              <tr><td style="padding:6px 8px">March</td><td style="padding:6px 8px;font-weight:600;color:var(--amber-bright)">30th April</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;font-size:12px;color:rgba(240,236,228,.5);line-height:1.6">
+            Interest Rate: <strong style="color:var(--amber-bright)">1.5% per month</strong> (or part of a month) on the TDS amount. Even a single day's delay in a month counts as a full month.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TRACKER ══ -->
+  <div class="tab-panel" id="tab-tracker">
+    <div class="sec-head">
+      <h2>Vendor Threshold Tracker</h2>
+      <p>Track cumulative annual payments per vendor. Alerts fire when 80% and 100% of the threshold is reached.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:340px 1fr;gap:20px" id="tracker-grid">
+      <div>
+        <div class="card">
+          <div class="card-head"><span class="ico">+</span> Log a Payment</div>
+          <div class="fg">
+            <label>Vendor Name</label>
+            <input type="text" id="t_name" placeholder="e.g. Acme Legal Services">
+          </div>
+          <div class="fg">
+            <label>Category</label>
+            <select id="t_cat">
+              <option value="contract_ind">Contractor — Individual/HUF</option>
+              <option value="contract_co">Contractor — Company/Firm</option>
+              <option value="prof">Professional Fees</option>
+              <option value="tech">Technical Services</option>
+              <option value="rent_land">Rent — Land/Building</option>
+              <option value="rent_machine">Rent — Machinery</option>
+              <option value="comm">Commission/Brokerage</option>
+              <option value="goods">Purchase of Goods</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Invoice Date</label>
+            <input type="date" id="t_date">
+          </div>
+          <div class="fg">
+            <label>Base Amount (Excl. GST) ₹</label>
+            <input type="number" id="t_amount" placeholder="e.g. 25,000">
+          </div>
+          <button class="btn btn-sage" onclick="logPayment()">Log Payment →</button>
+          <div id="tracker_msg" style="margin-top:14px;font-size:13px;font-weight:600;line-height:1.5;display:none"></div>
+          <hr class="divider">
+          <button class="btn btn-outline" onclick="clearTracker()">Clear All Tracker Data</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="ico">📊</span> Annual Threshold Status — FY 2026-27</div>
+        <div style="overflow-x:auto">
+          <table class="tr-table" id="tracker_table" style="display:none">
+            <thead><tr>
+              <th>Vendor</th>
+              <th>Category</th>
+              <th style="min-width:160px">Annual Spend</th>
+              <th>Threshold</th>
+              <th>Status</th>
+            </tr></thead>
+            <tbody id="tracker_body"></tbody>
+          </table>
+          <div class="empty-state" id="tracker_empty">
+            <div class="emo">📋</div>
+            <p>No vendors logged yet.<br>Add your first payment using the form on the left.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXAMPLES ══ -->
+  <div class="tab-panel" id="tab-examples">
+    <div class="sec-head">
+      <h2>Quick Reference Examples</h2>
+      <p>Real-world scenarios to instantly identify the right TDS treatment.</p>
+    </div>
+    <div class="ex-grid">
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--red-pale);color:var(--red)">DEDUCT NOW</span>
+        <div class="ex-label">Advance on Proforma Invoice</div>
+        <div class="ex-detail">Vendor sends a Proforma for ₹1,00,000 before the job starts. You pay an advance of ₹50,000.</div>
+        <span class="ex-action" style="background:var(--red-pale);color:var(--red)">Deduct TDS (e.g. 10%) = ₹5,000. Pay vendor ₹45,000 now.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--amber-pale);color:var(--amber)">CHECK HISTORY</span>
+        <div class="ex-label">Invoice Dated Feb 2026 (Prior Year)</div>
+        <div class="ex-detail">Vendor raises invoice dated February 2026 for work completed last year, but payment is due now.</div>
+        <span class="ex-action" style="background:var(--amber-pale);color:var(--amber)">Check if TDS was booked in FY 2025-26. If not, deduct before paying.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--sage-pale);color:var(--sage)">NO TDS</span>
+        <div class="ex-label">Legal Fee Below Threshold</div>
+        <div class="ex-detail">Advocate raises a bill for ₹25,000. Total annual payments to this advocate remain at ₹25,000.</div>
+        <span class="ex-action" style="background:var(--sage-pale);color:var(--sage)">Below ₹50,000 threshold. No TDS — pay full amount.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--red-pale);color:var(--red)">THRESHOLD CROSSED</span>
+        <div class="ex-label">Multiple Small Bills — Contractor</div>
+        <div class="ex-detail">Four invoices of ₹28,000 each from the same contractor over the year. Total = ₹1,12,000.</div>
+        <span class="ex-action" style="background:var(--red-pale);color:var(--red)">TDS applies from the invoice crossing ₹1L — deduct on that and all subsequent bills.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--blue-pale);color:var(--blue)">SPLIT INVOICE</span>
+        <div class="ex-label">Air Conditioner + Installation</div>
+        <div class="ex-detail">Invoice: AC unit ₹60,000 + Installation ₹8,000 + GST ₹12,240. Total ₹80,240.</div>
+        <span class="ex-action" style="background:var(--blue-pale);color:var(--blue)">AC unit = goods (no TDS if below ₹50L). Installation = contractor: TDS 1% on ₹8,000 = ₹80.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--red-pale);color:var(--red)">20% FLAT</span>
+        <div class="ex-label">Vendor Without PAN</div>
+        <div class="ex-detail">Any invoice, any category — vendor fails to mention PAN on the invoice.</div>
+        <span class="ex-action" style="background:var(--red-pale);color:var(--red)">Ignore all standard rates. Deduct 20% flat on base value. No exceptions.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--red-pale);color:var(--red)">RATE DOUBLES</span>
+        <div class="ex-label">Vendor is Non-ITR Filer (206AB)</div>
+        <div class="ex-detail">IT Portal check confirms vendor has not filed ITR for 2 consecutive years. Standard rate is 2%.</div>
+        <span class="ex-action" style="background:var(--red-pale);color:var(--red)">Apply double rate — 4% instead of 2%. Document the portal check result.</span>
+      </div>
+      <div class="ex-card">
+        <span class="ex-tag" style="background:var(--sage-pale);color:var(--sage)">GST RULE</span>
+        <div class="ex-label">GST-Inclusive Invoice</div>
+        <div class="ex-detail">Invoice total ₹1,18,000 (₹1,00,000 base + ₹18,000 GST). Professional service. PAN available.</div>
+        <span class="ex-action" style="background:var(--sage-pale);color:var(--sage)">TDS = 10% × ₹1,00,000 = ₹10,000. Pay vendor ₹1,00,000 + ₹18,000 GST − ₹10,000 = ₹1,08,000.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NOTIFICATIONS ══ -->
+  <div class="tab-panel" id="tab-notifications">
+    <div class="sec-head">
+      <h2>Notifications &amp; Alerts</h2>
+      <p>Set up your profile to receive on-screen alerts when vendor thresholds are approaching or crossed.</p>
+    </div>
+
+    <!-- Profile Panel -->
+    <div class="profile-panel">
+      <div class="card-head" style="color:var(--amber-bright);border-color:rgba(255,255,255,.1);margin-bottom:16px">
+        <span class="ico" style="background:var(--amber)">👤</span> Your Notification Profile
+      </div>
+      <div class="profile-form" id="profile-form-area">
+        <div class="fg-row">
+          <div class="fg">
+            <label style="color:rgba(255,255,255,.5)">Full Name</label>
+            <input type="text" id="p_name" placeholder="e.g. Rajesh Sharma">
+          </div>
+          <div class="fg">
+            <label style="color:rgba(255,255,255,.5)">Business / Firm Name</label>
+            <input type="text" id="p_firm" placeholder="e.g. Sharma Enterprises">
+          </div>
+        </div>
+        <div class="fg-row">
+          <div class="fg">
+            <label style="color:rgba(255,255,255,.5)">Email Address</label>
+            <input type="email" id="p_email" placeholder="e.g. rajesh@firm.com">
+          </div>
+          <div class="fg">
+            <label style="color:rgba(255,255,255,.5)">WhatsApp / Mobile Number</label>
+            <input type="text" id="p_phone" placeholder="e.g. +91 98765 43210">
+          </div>
+        </div>
+        <div class="fg">
+          <label style="color:rgba(255,255,255,.5)">Alert me when threshold reaches</label>
+          <select id="p_threshold_pct">
+            <option value="70">70% of annual threshold</option>
+            <option value="80" selected>80% of annual threshold (recommended)</option>
+            <option value="90">90% of annual threshold</option>
+            <option value="100">Only when threshold is crossed (100%)</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn btn-sage" onclick="saveProfile()" style="flex:1;background:var(--sage-mid)">Save Profile &amp; Enable Alerts →</button>
+        </div>
+      </div>
+
+      <div class="profile-saved" id="profile-saved-area">
+        <div class="profile-view">
+          <div class="profile-avatar" id="ps-avatar">?</div>
+          <div class="profile-info">
+            <h3 id="ps-name">—</h3>
+            <p id="ps-details">—</p>
+          </div>
+          <button class="profile-edit-btn" onclick="editProfile()">Edit</button>
+        </div>
+        <div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,.07);border-radius:8px;font-size:13px;color:rgba(255,255,255,.55)">
+          🔔 Alerts are active. Notifications will appear on-screen and will be logged below when vendor thresholds are reached. <span id="ps-threshold-note"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Log -->
+    <div class="card">
+      <div class="card-head"><span class="ico">🔔</span> Notification Log</div>
+      <ul class="notif-list" id="notif-list">
+        <div class="empty-state" id="notif-empty" style="padding:30px 0">
+          <div class="emo">🔕</div>
+          <p>No notifications yet.<br>Set up your profile above and log payments in the Vendor Tracker.</p>
+        </div>
+      </ul>
+    </div>
+
+    <div class="card" style="background:var(--amber-pale);border-color:#e8c89a">
+      <div class="card-head" style="color:var(--amber);border-color:#e8c89a"><span class="ico" style="background:var(--amber)">ℹ</span> About Notifications</div>
+      <p style="font-size:13.5px;color:var(--slate);line-height:1.7">
+        This tool runs entirely in your browser — no data is sent to any server. Notifications appear as on-screen alerts (toasts) when you log payments in the Vendor Tracker tab. Your profile and all vendor data are saved locally in this browser using LocalStorage. To receive actual WhatsApp or email alerts, share the notification log with your CA or accounts team periodically, or screenshot the notification for action.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Disclaimer:</strong> This tool is for general reference based on the Income Tax Act, 2025 and FY 2026-27 provisions. Tax laws are subject to notifications, circulars, and amendments. Always consult a qualified Chartered Accountant before finalising TDS treatment. All data is stored only in your local browser and is never transmitted anywhere.
+  </div>
+</main>
+
+<!-- ─── CLIENT PROFILE MODAL ─── -->
+<div class="modal-overlay" id="profile-modal" onclick="closeProfileModalOutside(event)">
+  <div class="modal">
+    <div class="modal-head">Your Profile</div>
+    <div class="modal-sub">Set up your details so the tool can personalise threshold alerts for your account.</div>
+    <div class="fg">
+      <label>Full Name</label>
+      <input type="text" id="m_name" placeholder="e.g. Rajesh Sharma">
+    </div>
+    <div class="fg">
+      <label>Business / Firm Name</label>
+      <input type="text" id="m_firm" placeholder="e.g. Sharma Enterprises">
+    </div>
+    <div class="fg">
+      <label>Email Address</label>
+      <input type="email" id="m_email" placeholder="e.g. rajesh@firm.com">
+    </div>
+    <div class="fg">
+      <label>WhatsApp / Mobile</label>
+      <input type="text" id="m_phone" placeholder="e.g. +91 98765 43210">
+    </div>
+    <div class="fg">
+      <label>Alert me when threshold reaches</label>
+      <select id="m_threshold_pct">
+        <option value="70">70% of annual limit</option>
+        <option value="80" selected>80% of annual limit (recommended)</option>
+        <option value="90">90% of annual limit</option>
+        <option value="100">Only when crossed (100%)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
+      <button class="btn btn-sage" onclick="saveProfileFromModal()">Save Profile →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONSTANTS ───
+const STORAGE_VENDORS  = 'tds_vendors_2026';
+const STORAGE_PROFILE  = 'tds_profile_2026';
+const STORAGE_NOTIFS   = 'tds_notifs_2026';
+
+const rules = {
+  contract_ind: { threshold:100000,  rate:1,   label:'Contractor (Individual/HUF)' },
+  contract_co:  { threshold:100000,  rate:2,   label:'Contractor (Company/Firm)' },
+  prof:         { threshold:50000,   rate:10,  label:'Professional Fees' },
+  tech:         { threshold:50000,   rate:2,   label:'Technical Services' },
+  rent_land:    { threshold:600000,  rate:10,  label:'Rent — Land/Building' },
+  rent_machine: { threshold:600000,  rate:2,   label:'Rent — Machinery' },
+  comm:         { threshold:20000,   rate:2,   label:'Commission/Brokerage' },
+  goods:        { threshold:5000000, rate:0.1, label:'Purchase of Goods' }
+};
+
+function fmt(n){ return parseFloat((+n).toFixed(2)).toLocaleString('en-IN'); }
+
+// ─── TAB SWITCHING ───
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── RESPONSIVE ───
+function applyResponsive(){
+  const w = window.innerWidth;
+  const cg = document.getElementById('calc-grid');
+  const tg = document.getElementById('tracker-grid');
+  if(cg) cg.style.gridTemplateColumns = w<720?'1fr':'1fr 1fr';
+  if(tg) tg.style.gridTemplateColumns = w<720?'1fr':'340px 1fr';
+}
+applyResponsive();
+window.addEventListener('resize',applyResponsive);
+
+// ─── PROFILE ───
+function getProfile(){ return JSON.parse(localStorage.getItem(STORAGE_PROFILE)||'null'); }
+function saveProfileData(obj){ localStorage.setItem(STORAGE_PROFILE, JSON.stringify(obj)); }
+
+function refreshHeaderProfile(){
+  const p = getProfile();
+  const av = document.getElementById('hdr-avatar');
+  const nm = document.getElementById('hdr-name');
+  if(p && p.name){
+    av.textContent = p.name.trim().charAt(0).toUpperCase();
+    nm.textContent = p.name;
+    nm.classList.remove('empty');
+  } else {
+    av.textContent = '?';
+    nm.textContent = 'Set up your profile';
+    nm.classList.add('empty');
+  }
+}
+
+function refreshProfilePanel(){
+  const p = getProfile();
+  const form = document.getElementById('profile-form-area');
+  const saved = document.getElementById('profile-saved-area');
+  if(!p || !p.name){ form.style.display='block'; saved.style.display='none'; return; }
+  form.style.display='none'; saved.style.display='block';
+  document.getElementById('ps-avatar').textContent = p.name.charAt(0).toUpperCase();
+  document.getElementById('ps-name').textContent = p.name + (p.firm ? ` · ${p.firm}` : '');
+  document.getElementById('ps-details').textContent = [p.email, p.phone].filter(Boolean).join('  ·  ');
+  document.getElementById('ps-threshold-note').textContent = `Alert trigger: ${p.alertPct||80}% of threshold.`;
+  // Sync form fields
+  setVal('p_name', p.name); setVal('p_firm', p.firm); setVal('p_email', p.email);
+  setVal('p_phone', p.phone); setVal('p_threshold_pct', p.alertPct||80);
+}
+
+function setVal(id,v){ const el=document.getElementById(id); if(el&&v!=null) el.value=v; }
+
+function saveProfile(){
+  const obj = {
+    name: document.getElementById('p_name').value.trim(),
+    firm: document.getElementById('p_firm').value.trim(),
+    email: document.getElementById('p_email').value.trim(),
+    phone: document.getElementById('p_phone').value.trim(),
+    alertPct: parseInt(document.getElementById('p_threshold_pct').value)
+  };
+  if(!obj.name){ alert('Please enter your name.'); return; }
+  saveProfileData(obj);
+  refreshHeaderProfile(); refreshProfilePanel();
+  showToast('success','✅','Profile saved! Threshold alerts are now active.');
+}
+
+function editProfile(){
+  const form=document.getElementById('profile-form-area');
+  const saved=document.getElementById('profile-saved-area');
+  form.style.display='block'; saved.style.display='none';
+}
+
+// ─── PROFILE MODAL ───
+function openProfileModal(){
+  const p = getProfile();
+  if(p){ setVal('m_name',p.name); setVal('m_firm',p.firm); setVal('m_email',p.email); setVal('m_phone',p.phone); setVal('m_threshold_pct',p.alertPct||80); }
+  document.getElementById('profile-modal').classList.add('open');
+}
+function closeProfileModal(){ document.getElementById('profile-modal').classList.remove('open'); }
+function closeProfileModalOutside(e){ if(e.target===document.getElementById('profile-modal')) closeProfileModal(); }
+function saveProfileFromModal(){
+  const obj = {
+    name: document.getElementById('m_name').value.trim(),
+    firm: document.getElementById('m_firm').value.trim(),
+    email: document.getElementById('m_email').value.trim(),
+    phone: document.getElementById('m_phone').value.trim(),
+    alertPct: parseInt(document.getElementById('m_threshold_pct').value)
+  };
+  if(!obj.name){ alert('Please enter your name.'); return; }
+  saveProfileData(obj);
+  // Sync notification tab fields
+  setVal('p_name',obj.name); setVal('p_firm',obj.firm); setVal('p_email',obj.email);
+  setVal('p_phone',obj.phone); setVal('p_threshold_pct',obj.alertPct||80);
+  refreshHeaderProfile(); refreshProfilePanel();
+  closeProfileModal();
+  showToast('success','✅','Profile saved! Threshold alerts are now active.');
+}
+
+// ─── CALCULATOR — Annual Prompt Logic ───
+function onBaseAmountChange(){
+  const amount = parseFloat(document.getElementById('c_amount').value)||0;
+  const prompt = document.getElementById('c_annual_prompt');
+  const confirmed = document.getElementById('c_annual_confirmed');
+  const manualWrap = document.getElementById('c_annual_manual_wrap');
+  const resolved = document.getElementById('c_annual_resolved');
+
+  // Reset annual state whenever base amount changes
+  resolved.value = '';
+  confirmed.style.display = 'none';
+  manualWrap.style.display = 'none';
+  document.getElementById('calc_result').style.display = 'none';
+
+  if(amount > 0){
+    document.getElementById('c_prompt_amount').textContent = '₹' + fmt(amount);
+    prompt.style.display = 'block';
+  } else {
+    prompt.style.display = 'none';
+  }
+}
+
+function setAnnualFromBase(){
+  const amount = parseFloat(document.getElementById('c_amount').value)||0;
+  document.getElementById('c_annual_resolved').value = amount;
+  document.getElementById('c_annual_display').textContent = '₹' + fmt(amount) + ' (same as base amount)';
+  document.getElementById('c_annual_prompt').style.display = 'none';
+  document.getElementById('c_annual_manual_wrap').style.display = 'none';
+
+  const confirmed = document.getElementById('c_annual_confirmed');
+  confirmed.style.display = 'flex';
+  confirmed.style.alignItems = 'center';
+  // use block display to show it
+  confirmed.style.display = 'block';
+}
+
+function askManualAnnual(){
+  document.getElementById('c_annual_prompt').style.display = 'none';
+  document.getElementById('c_annual_manual_wrap').style.display = 'block';
+  document.getElementById('c_annual').value = '';
+  document.getElementById('c_annual').focus();
+  document.getElementById('c_annual_resolved').value = '';
+}
+
+function resetAnnual(){
+  const amount = parseFloat(document.getElementById('c_amount').value)||0;
+  document.getElementById('c_annual_resolved').value = '';
+  document.getElementById('c_annual_confirmed').style.display = 'none';
+  document.getElementById('c_annual_manual_wrap').style.display = 'none';
+  if(amount > 0){
+    document.getElementById('c_prompt_amount').textContent = '₹' + fmt(amount);
+    document.getElementById('c_annual_prompt').style.display = 'block';
+  }
+}
+
+function getResolvedAnnual(){
+  // Priority: hidden resolved field → manual input field
+  const resolved = parseFloat(document.getElementById('c_annual_resolved').value)||0;
+  if(resolved > 0) return resolved;
+  const manual = document.getElementById('c_annual');
+  return parseFloat(manual ? manual.value : 0)||0;
+}
+
+function calcTDS(){
+  const cat    = document.getElementById('c_cat').value;
+  const amount = parseFloat(document.getElementById('c_amount').value)||0;
+  const gst    = parseFloat(document.getElementById('c_gst').value)||0;
+  const hasPAN = document.getElementById('c_pan').value==='yes';
+  const annual = getResolvedAnnual();
+  const box    = document.getElementById('calc_result');
+
+  if(!cat)    { alert('Please select the nature of payment.'); return; }
+  if(!amount) { alert('Please enter the base amount (excluding GST).'); return; }
+  if(!annual) { alert('Please confirm the estimated annual total — use the Yes/No prompt above, or enter it manually.'); return; }
+
+  const rule = rules[cat];
+  const total = amount + gst;
+  let html, boxClass;
+  let tdsApplicable = false;
+  let tdsAmount = 0;
+
+  if(!hasPAN){
+    tdsAmount = amount * 0.20;
+    tdsApplicable = true;
+    boxClass = 'yes';
+    html = `<div class="res-verdict" style="color:var(--red)">⚠️ No PAN — 20% Flat Deduction</div>
+    <div class="res-amount" style="color:var(--red)">TDS = ₹${fmt(tdsAmount)}</div>
+    <div class="res-detail">PAN not available on invoice. Flat 20% applied on base ₹${fmt(amount)}.<br><br>
+    <strong>Net Payment to Vendor: ₹${fmt(amount-tdsAmount)} + GST ₹${fmt(gst)} = ₹${fmt(total-tdsAmount)}</strong></div>`;
+
+  } else if(annual > rule.threshold){
+    tdsAmount = amount * rule.rate / 100;
+    tdsApplicable = true;
+    boxClass = 'yes';
+    html = `<div class="res-verdict" style="color:var(--red)">✅ TDS Required</div>
+    <div class="res-amount" style="color:var(--sage)">TDS = ₹${fmt(tdsAmount)}</div>
+    <div class="res-detail">
+      <strong>${rule.label}</strong> &nbsp;·&nbsp; Rate: <strong>${rule.rate}%</strong><br>
+      Estimated annual total ₹${fmt(annual)} exceeds the threshold of ₹${fmt(rule.threshold)}.<br>
+      ₹${fmt(amount)} × ${rule.rate}% = ₹${fmt(tdsAmount)}<br><br>
+      <strong>Net Payment to Vendor: ₹${fmt(amount-tdsAmount)} + GST ₹${fmt(gst)} = ₹${fmt(total-tdsAmount)}</strong>
+    </div>`;
+
+  } else if(annual > rule.threshold * 0.8){
+    boxClass = 'warn';
+    html = `<div class="res-verdict" style="color:var(--amber)">⚡ Threshold Approaching</div>
+    <div class="res-detail">Estimated annual total ₹${fmt(annual)} is at <strong>${Math.round(annual/rule.threshold*100)}%</strong> of the ₹${fmt(rule.threshold)} limit for ${rule.label}.<br>
+    No TDS on this invoice yet — but monitor cumulative payments to this vendor closely. Use the Vendor Tracker tab.</div>`;
+
+  } else {
+    boxClass = 'no';
+    html = `<div class="res-verdict" style="color:var(--sage)">✓ No TDS Required</div>
+    <div class="res-detail">Estimated annual total ₹${fmt(annual)} is below the ₹${fmt(rule.threshold)} threshold for ${rule.label}.<br>
+    Pay vendor the full amount: <strong>₹${fmt(total)}</strong>.<br><br>
+    <em>Keep tracking cumulative payments. TDS will apply from the invoice that crosses the threshold.</em></div>`;
+  }
+
+  box.className = 'result-box ' + boxClass;
+  box.innerHTML = html;
+  box.style.display = 'block';
+
+  // Store TDS amount for interest calculation
+  window._lastTdsAmount = tdsAmount;
+
+  // Show deposit delay section only when TDS is actually deductible
+  const depSection = document.getElementById('deposit_section');
+  const challanModule = document.getElementById('challan_module');
+  if(tdsApplicable){
+    depSection.style.display = 'block';
+    resetDepositUI();
+    document.getElementById('d_deposit_date').value = new Date().toISOString().split('T')[0];
+    // Show challan module
+    challanModule.style.display = 'block';
+    // Reset challan UI
+    document.getElementById('challan_result').style.display = 'none';
+    document.getElementById('challan_yes_btn').className = 'challan-btn';
+    document.getElementById('challan_no_btn').className = 'challan-btn';
+  } else {
+    depSection.style.display = 'none';
+    challanModule.style.display = 'none';
+  }
+}
+
+function resetDepositUI(){
+  styleDepBtn('dep_yes_btn', false);
+  styleDepBtn('dep_no_btn', false);
+  document.getElementById('deposit_dates').style.display   = 'none';
+  document.getElementById('deposit_ontime').style.display  = 'none';
+  document.getElementById('interest_result').style.display = 'none';
+  document.getElementById('d_invoice_date').value = '';
+}
+
+function styleDepBtn(id, active){
+  const btn = document.getElementById(id);
+  if(active){
+    btn.style.background   = 'var(--ink)';
+    btn.style.color        = '#fff';
+    btn.style.borderColor  = 'var(--ink)';
+  } else {
+    btn.style.background   = 'var(--cream)';
+    btn.style.color        = 'var(--ink)';
+    btn.style.borderColor  = 'var(--line)';
+  }
+}
+
+function toggleDepositDelay(hasDelay){
+  styleDepBtn('dep_yes_btn',  hasDelay);
+  styleDepBtn('dep_no_btn',  !hasDelay);
+  document.getElementById('interest_result').style.display = 'none';
+  if(hasDelay){
+    document.getElementById('deposit_dates').style.display  = 'block';
+    document.getElementById('deposit_ontime').style.display = 'none';
+  } else {
+    document.getElementById('deposit_dates').style.display  = 'none';
+    document.getElementById('deposit_ontime').style.display = 'block';
+  }
+}
+
+// ─── INTEREST ON LATE DEPOSIT (ITA 2025, Sec 201) ───
+function calcInterest(){
+  const invoiceDateStr = document.getElementById('d_invoice_date').value;
+  const depositDateStr = document.getElementById('d_deposit_date').value;
+  const tdsAmt = window._lastTdsAmount || 0;
+
+  if(!invoiceDateStr){ alert('Please enter the Invoice Date.'); return; }
+  if(!depositDateStr){ alert('Please enter the Actual Date of TDS Deposit.'); return; }
+  if(!tdsAmt)        { alert('Please calculate TDS first.'); return; }
+
+  const invoiceDate = new Date(invoiceDateStr + 'T00:00:00');
+  const depositDate = new Date(depositDateStr + 'T00:00:00');
+
+  if(depositDate <= invoiceDate){ alert('Deposit date must be after the invoice date.'); return; }
+
+  const invMonth = invoiceDate.getMonth();   // 0=Jan … 11=Dec
+  const invYear  = invoiceDate.getFullYear();
+
+  // ── Due Date ──
+  let dueDate;
+  if(invMonth === 2){  // March
+    dueDate = new Date(invYear, 3, 30);   // April 30
+  } else {
+    let dm = invMonth + 1, dy = invYear;
+    if(dm > 11){ dm = 0; dy++; }
+    dueDate = new Date(dy, dm, 7);        // 7th of following month
+  }
+
+  const resultBox = document.getElementById('interest_result');
+
+  // ── On-time? ──
+  if(depositDate <= dueDate){
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+      <div style="padding:14px 16px;background:var(--sage-pale);border:1.5px solid #9ec9b8;border-radius:var(--r-sm)">
+        <div style="font-weight:700;color:var(--sage);font-size:14px;margin-bottom:4px">✅ No Interest Liability</div>
+        <div style="font-size:13px;color:var(--slate);line-height:1.65">
+          TDS deposited by <strong>${fmtDate(depositDate)}</strong>, on or before the due date of <strong>${fmtDate(dueDate)}</strong>.
+          No interest under Section 201 is applicable.
+        </div>
+      </div>`;
+    return;
+  }
+
+  // ── Month-counting rule ──
+  const lastDayOfInvMonth = new Date(invYear, invMonth + 1, 0).getDate();
+  const isLastDay = invoiceDate.getDate() === lastDayOfInvMonth;
+
+  // Start: if last day of month → 1st of NEXT month; else → 1st of invoice month
+  const startYear  = isLastDay ? (invMonth === 11 ? invYear+1 : invYear) : invYear;
+  const startMonth = isLastDay ? (invMonth === 11 ? 0 : invMonth+1) : invMonth;
+  const countFrom  = new Date(startYear, startMonth, 1);
+
+  // End: 1st of the deposit month (partial month = full month)
+  const countTo = new Date(depositDate.getFullYear(), depositDate.getMonth(), 1);
+
+  const delayMonths = Math.max(1,
+    (countTo.getFullYear() - countFrom.getFullYear()) * 12 +
+    (countTo.getMonth()    - countFrom.getMonth()) + 1
+  );
+
+  const interestAmt = tdsAmt * 0.015 * delayMonths;
+  const totalDue    = tdsAmt + interestAmt;
+
+  const ruleApplied = isLastDay
+    ? 'Last day of month rule applied — invoice month excluded from delay count.'
+    : 'Invoice not on last day of month — invoice month included in delay count.';
+
+  const marchNote = invMonth === 2
+    ? `<div style="margin-top:8px;font-size:12px;padding:8px 10px;background:rgba(0,0,0,.04);border-radius:6px;color:var(--slate)">
+        📌 <strong>March Special Rule:</strong> TDS for March invoices was due by 30th April. Delay is measured from that extended due date.
+       </div>`
+    : '';
+
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = `
+    <div style="padding:18px 20px;background:var(--red-pale);border:2px solid #e8a09a;border-radius:var(--r);animation:fadeUp .3s ease">
+      <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--red);margin-bottom:14px">
+        ⚠️ Interest Liability on Late TDS Deposit
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="background:#fff;border-radius:8px;padding:12px;text-align:center;border:1px solid #f0c0bc">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--slate-light);font-weight:700;margin-bottom:4px">TDS Amount</div>
+          <div style="font-size:18px;font-weight:700;color:var(--ink);font-family:'Playfair Display',serif">₹${fmt(tdsAmt)}</div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:12px;text-align:center;border:1px solid #f0c0bc">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--slate-light);font-weight:700;margin-bottom:4px">Months of Delay</div>
+          <div style="font-size:18px;font-weight:700;color:var(--red);font-family:'Playfair Display',serif">${delayMonths} Month${delayMonths>1?'s':''}</div>
+        </div>
+        <div style="background:var(--red);border-radius:8px;padding:12px;text-align:center">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.65);font-weight:700;margin-bottom:4px">Interest Payable</div>
+          <div style="font-size:18px;font-weight:700;color:#fff;font-family:'Playfair Display',serif">₹${fmt(interestAmt)}</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-radius:8px;padding:14px;border:1px solid #f0c0bc;font-size:13px;color:var(--slate);line-height:1.8">
+        <div><strong style="color:var(--ink)">Invoice Date:</strong> ${fmtDate(invoiceDate)}</div>
+        <div><strong style="color:var(--ink)">TDS Due By:</strong> ${fmtDate(dueDate)}</div>
+        <div><strong style="color:var(--ink)">Actual Deposit Date:</strong> ${fmtDate(depositDate)}</div>
+        <div><strong style="color:var(--ink)">Counting Rule:</strong> ${ruleApplied}</div>
+        <div><strong style="color:var(--ink)">Formula:</strong> ₹${fmt(tdsAmt)} × 1.5% × ${delayMonths} month${delayMonths>1?'s':''} = <strong style="color:var(--red)">₹${fmt(interestAmt)}</strong></div>
+        ${marchNote}
+      </div>
+
+      <div style="margin-top:12px;padding:12px 16px;background:rgba(192,57,43,.12);border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:700;color:var(--red)">Total Amount Payable to Government (TDS + Interest)</span>
+        <span style="font-size:22px;font-weight:800;color:var(--red);font-family:'Playfair Display',serif;white-space:nowrap">₹${fmt(totalDue)}</span>
+      </div>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--slate);line-height:1.65">
+        ⚠️ Interest is charged at 1.5% per month or <em>part</em> of a month under Section 201, Income Tax Act 2025.
+        Even a single day into a new month counts as a full month.
+      </div>
+    </div>`;
+}
+
+function fmtDate(d){
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+// ─── CHALLAN MAPPING MODULE ───
+const challanMap = {
+  contract_ind: {
+    section:    '393(1) — Sl. 6(i)',
+    oldSection: 'Formerly Section 194C',
+    codes: [
+      { code:'1023', desc:'Contractor is an Individual or HUF' },
+      { code:'1024', desc:'Contractor is Corporate / Firm / Others' }
+    ],
+    multiCode: true,
+    note: 'Select Code 1023 if the contractor is an Individual or HUF. Select Code 1024 for all other entities (companies, firms, LLPs, etc.).'
+  },
+  contract_co: {
+    section:    '393(1) — Sl. 6(i)',
+    oldSection: 'Formerly Section 194C',
+    codes: [
+      { code:'1024', desc:'Contractor is Corporate / Firm / Others' }
+    ],
+    multiCode: false,
+    note: 'Use Code 1024 for payments to companies, firms, LLPs, and all non-individual/non-HUF contractors.'
+  },
+  prof: {
+    section:    '393(1) Sl. 6(iii) D(b)',
+    oldSection: 'Formerly Section 194J',
+    codes: [
+      { code:'1027', desc:'Professional Fees — Legal, CA, Medical, Engineering, Architect' }
+    ],
+    multiCode: false,
+    note: 'Code 1027 applies to fees paid for professional services such as legal, medical, CA, and architecture.'
+  },
+  tech: {
+    section:    '393(1) Sl. 6(iii) D(a)',
+    oldSection: 'Formerly Section 194J',
+    codes: [
+      { code:'1026', desc:'Technical Services — IT, BPO, Call Centre, Software Consultancy' }
+    ],
+    multiCode: false,
+    note: 'Code 1026 applies to technical service fees including IT consulting, software services, and call centre operations.'
+  },
+  rent_land: {
+    section:    '393(1) — Sl. 2(ii) D(a)',
+    oldSection: 'Formerly Section 194I',
+    codes: [
+      { code:'1008', desc:'Rent of Land, Building, or Furniture' }
+    ],
+    multiCode: false,
+    note: 'Code 1008 covers rent paid for land, building, or furniture. Threshold is ₹6,00,000 per annum.'
+  },
+  rent_machine: {
+    section:    '393(1) — Sl. 2(ii) D(b)',
+    oldSection: 'Formerly Section 194I',
+    codes: [
+      { code:'1009', desc:'Rent of Plant, Machinery, or Equipment' }
+    ],
+    multiCode: false,
+    note: 'Code 1009 covers rent paid for plant, machinery, and equipment. Rate is 2%.'
+  },
+  comm: {
+    section:    '393(1) — Sl. 1(ii)',
+    oldSection: 'Formerly Section 194H',
+    codes: [
+      { code:'1006', desc:'Commission or Brokerage payments' }
+    ],
+    multiCode: false,
+    note: 'Code 1006 applies to all forms of commission and brokerage payments. Threshold is ₹20,000 per annum.'
+  },
+  goods: {
+    section:    '393(1) — Sl. 8(ii)',
+    oldSection: 'Formerly Section 194Q',
+    codes: [
+      { code:'1045', desc:'Purchase of Goods (buyer turnover > ₹10 Cr)' }
+    ],
+    multiCode: false,
+    note: 'Code 1045 applies to purchase of goods where the buyer\'s gross turnover exceeds ₹10 crore in the preceding financial year. Threshold is ₹50 lakh per vendor.'
+  }
+};
+
+function showChallanInfo(show){
+  const yesBtn = document.getElementById('challan_yes_btn');
+  const noBtn  = document.getElementById('challan_no_btn');
+  const result = document.getElementById('challan_result');
+
+  // Style buttons
+  yesBtn.className = show ? 'challan-btn active-yes' : 'challan-btn';
+  noBtn.className  = show ? 'challan-btn'            : 'challan-btn active-no';
+
+  if(!show){
+    result.style.display = 'none';
+    return;
+  }
+
+  // Read selected category
+  const cat = document.getElementById('c_cat').value;
+  const mapping = challanMap[cat];
+
+  if(!mapping){
+    result.style.display = 'block';
+    result.innerHTML = `<div style="font-size:13px;color:var(--slate);padding:10px">
+      Challan code mapping is not available for the selected category.
+      Please consult your tax advisor or refer to the OLTAS challan portal.
+    </div>`;
+    return;
+  }
+
+  // Build code rows
+  let codeRows = '';
+  if(mapping.multiCode){
+    codeRows = mapping.codes.map(c => `
+      <div class="challan-row">
+        <div class="cr-label">🔑 Challan Deposit Code</div>
+        <div>
+          <span class="cr-code">${c.code}</span>
+          <span style="font-size:12px;color:var(--slate);margin-left:10px">${c.desc}</span>
+        </div>
+      </div>`).join('');
+  } else {
+    const c = mapping.codes[0];
+    codeRows = `
+      <div class="challan-row">
+        <div class="cr-label">🔑 Challan Deposit Code</div>
+        <div>
+          <span class="cr-code">${c.code}</span>
+          <span style="font-size:12px;color:var(--slate);margin-left:10px">${c.desc}</span>
+        </div>
+      </div>`;
+  }
+
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div class="cr-head">
+      📋 Challan Deposit Details
+      <span class="cr-pill">ITA 2025</span>
+    </div>
+
+    <div class="challan-row">
+      <div class="cr-label">📖 Statutory Section (2025 Act)</div>
+      <div class="cr-value">${mapping.section}</div>
+    </div>
+    <div class="challan-row">
+      <div class="cr-label" style="color:var(--slate-light);font-weight:500;font-size:12px">Cross-reference</div>
+      <div style="font-size:12px;color:var(--slate)">${mapping.oldSection}</div>
+    </div>
+    ${codeRows}
+
+    <div class="challan-note">
+      <strong>📌 Filing Note:</strong> ${mapping.note}<br>
+      Enter this section and code in <strong>ITNS 281</strong> (the TDS/TCS challan) when depositing
+      the TDS amount at the bank or via the Income Tax e-filing portal.
+    </div>`;
+}
+function getVendors(){ return JSON.parse(localStorage.getItem(STORAGE_VENDORS)||'{}'); }
+function saveVendors(d){ localStorage.setItem(STORAGE_VENDORS, JSON.stringify(d)); }
+function getNotifs(){ return JSON.parse(localStorage.getItem(STORAGE_NOTIFS)||'[]'); }
+function saveNotifs(n){ localStorage.setItem(STORAGE_NOTIFS, JSON.stringify(n)); }
+
+function logPayment(){
+  const name   = document.getElementById('t_name').value.trim();
+  const cat    = document.getElementById('t_cat').value;
+  const date   = document.getElementById('t_date').value;
+  const amount = parseFloat(document.getElementById('t_amount').value)||0;
+  const msgEl  = document.getElementById('tracker_msg');
+
+  if(!name||!amount||!date){ alert('Please fill in all fields.'); return; }
+
+  const data = getVendors();
+  const key  = name.toLowerCase().replace(/\s+/g,'_');
+  if(!data[key]) data[key]={ name, cat, total:0, entries:[] };
+  data[key].total += amount;
+  data[key].entries.push({ date, amount });
+  data[key].cat = cat;
+  saveVendors(data);
+
+  const rule  = rules[cat];
+  const total = data[key].total;
+  const pct   = Math.round(total/rule.threshold*100);
+  const profile = getProfile();
+  const alertPct = profile ? (profile.alertPct||80) : 80;
+
+  let statusMsg, color, toastType, toastIcon, toastMsg;
+
+  if(total > rule.threshold){
+    statusMsg = `⚠️ Threshold CROSSED! ₹${fmt(total)} exceeds ₹${fmt(rule.threshold)} limit. Deduct TDS immediately.`;
+    color='var(--red)'; toastType='danger'; toastIcon='🚨';
+    toastMsg = `${name}: Annual limit of ₹${fmt(rule.threshold)} crossed (₹${fmt(total)} paid). TDS deduction is now mandatory.`;
+    addNotification('danger', toastIcon, toastMsg, name);
+  } else if(pct >= alertPct){
+    statusMsg = `⚡ Alert: ₹${fmt(total)} = ${pct}% of ₹${fmt(rule.threshold)} limit for ${name}.`;
+    color='var(--amber)'; toastType='warn'; toastIcon='⚡';
+    toastMsg = `${name}: ${pct}% of the annual threshold used (₹${fmt(total)} of ₹${fmt(rule.threshold)}). Review TDS readiness.`;
+    addNotification('warn', toastIcon, toastMsg, name);
+  } else {
+    statusMsg = `✓ Logged. Annual total: ₹${fmt(total)} (${pct}% of ₹${fmt(rule.threshold)} limit).`;
+    color='var(--sage)';
+  }
+
+  msgEl.style.color=color; msgEl.textContent=statusMsg; msgEl.style.display='block';
+  if(toastType) showToast(toastType, toastIcon, toastMsg);
+
+  document.getElementById('t_name').value='';
+  document.getElementById('t_amount').value='';
+  document.getElementById('t_date').value=new Date().toISOString().split('T')[0];
+
+  renderTracker();
+  renderNotifications();
+}
+
+function addNotification(type, icon, msg, vendor){
+  const notifs = getNotifs();
+  notifs.unshift({ type, icon, msg, vendor, time: new Date().toLocaleString('en-IN') });
+  if(notifs.length>50) notifs.length=50;
+  saveNotifs(notifs);
+  updateNotifBadge();
+}
+
+function updateNotifBadge(){
+  const n = getNotifs().length;
+  const badge = document.getElementById('notif-count');
+  if(n>0){ badge.textContent=n; badge.style.display='inline'; }
+  else { badge.style.display='none'; }
+}
+
+function renderTracker(){
+  const data  = getVendors();
+  const tbody = document.getElementById('tracker_body');
+  const empty = document.getElementById('tracker_empty');
+  const table = document.getElementById('tracker_table');
+  const keys  = Object.keys(data);
+
+  if(!keys.length){ table.style.display='none'; empty.style.display='block'; return; }
+  table.style.display='table'; empty.style.display='none';
+  tbody.innerHTML='';
+
+  keys.sort().forEach(k=>{
+    const v = data[k];
+    const rule = rules[v.cat]||{ threshold:100000 };
+    const pct  = Math.min(100, Math.round(v.total/rule.threshold*100));
+    let chip,fillClass;
+    if(v.total>rule.threshold){ chip='<span class="chip ch-danger">DEDUCT TDS</span>'; fillClass='pf-danger'; }
+    else if(v.total>rule.threshold*0.8){ chip='<span class="chip ch-warn">NEAR LIMIT</span>'; fillClass='pf-warn'; }
+    else { chip='<span class="chip ch-safe">SAFE</span>'; fillClass='pf-safe'; }
+
+    tbody.innerHTML+=`<tr>
+      <td><strong>${v.name}</strong></td>
+      <td style="font-size:12.5px;color:var(--slate)">${rules[v.cat]?.label||v.cat}</td>
+      <td>
+        <strong>₹${fmt(v.total)}</strong>
+        <div class="prog"><div class="prog-fill ${fillClass}" style="width:${pct}%"></div></div>
+        <div style="font-size:11px;color:var(--slate-light);margin-top:3px">${pct}% of ₹${fmt(rule.threshold)}</div>
+      </td>
+      <td>₹${fmt(rule.threshold)}</td>
+      <td>${chip}</td>
+    </tr>`;
+  });
+}
+
+function clearTracker(){
+  if(confirm('Clear all vendor tracking data for FY 2026-27?')){
+    localStorage.removeItem(STORAGE_VENDORS);
+    document.getElementById('tracker_msg').style.display='none';
+    renderTracker();
+  }
+}
+
+function renderNotifications(){
+  const notifs = getNotifs();
+  const list   = document.getElementById('notif-list');
+  const empty  = document.getElementById('notif-empty');
+  if(!notifs.length){ list.innerHTML=''; list.appendChild(empty); empty.style.display='block'; return; }
+  empty.style.display='none';
+  list.innerHTML = notifs.map(n=>`
+    <li class="notif-item ${n.type}">
+      <span class="notif-emo">${n.icon}</span>
+      <div>
+        <div style="font-weight:600;font-size:13.5px">${n.msg}</div>
+        <div class="notif-stamp">🕐 ${n.time}</div>
+      </div>
+    </li>`).join('');
+}
+
+// ─── TOAST ───
+function showToast(type, icon, msg){
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span class="toast-icon">${icon}</span><span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>`;
+  container.appendChild(t);
+  setTimeout(()=>{ if(t.parentElement) t.remove(); }, 6000);
+}
+
+// ─── INIT ───
+document.getElementById('t_date').value = new Date().toISOString().split('T')[0];
+refreshHeaderProfile();
+refreshProfilePanel();
+renderTracker();
+renderNotifications();
+updateNotifBadge();
+</script>
+</body>
+</html>
